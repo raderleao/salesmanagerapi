@@ -21,7 +21,7 @@ public class CadastroPedidoService {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private CadastroServicoService cadastroServico;
+    private ProdutoServicoService psService;
 
     @Autowired
     private CadastroProdutoService cadastroProduto;
@@ -30,9 +30,9 @@ public class CadastroPedidoService {
     @Transactional
     public Pedido emitir(Pedido pedido) {
         pedido.abrir();
-        adicionarItens(pedido);
-        pedido.calcularValorTotal();
+        validarItens(pedido);
 
+        pedido.calcularValorTotal();
         return pedidoRepository.save(pedido);
     }
 
@@ -40,6 +40,20 @@ public class CadastroPedidoService {
     public Pedido fechar(Pedido pedido) {
         pedido.fechar();
         return pedidoRepository.save(pedido);
+    }
+
+    private void validarItens(Pedido pedido){
+
+
+        psService.buscarOuFalhar(pedido.getItens().get(0).getProdutoServico().getId());
+
+        pedido.getItens().forEach(item -> {
+            ProdutoServico produtoServico = psService.buscarOuFalhar(item.getProdutoServico().getId());
+
+            item.setPedido(pedido);
+            item.setProdutoServico(produtoServico);
+            item.setPrecoUnitario(produtoServico.getPreco());
+        });
     }
 
     @Transactional
@@ -52,6 +66,7 @@ public class CadastroPedidoService {
 
             pedido.adicionarItem(item);
         });
+        pedido.calcularValorTotal();
     }
 
     @Transactional

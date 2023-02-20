@@ -2,7 +2,6 @@ package com.rader.salesmanager.domain.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -10,14 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@ToString
 @Data
-@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Entity
 public class Pedido {
     @EqualsAndHashCode.Include
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
 
     private BigDecimal valorTotalServicos;
@@ -72,18 +69,20 @@ public class Pedido {
     public BigDecimal getValorTotalProdutos() {
         return itens.stream()
                 .filter(item -> item.getProdutoServico().getProduto())
-                .map(ItemPedido::getValorTotal)
+                .map(ItemPedido::getPrecoTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public BigDecimal getValorTotalServicos() {
         return itens.stream()
                 .filter(item -> !item.getProdutoServico().getProduto())
-                .map(ItemPedido::getValorTotal)
+                .map(ItemPedido::getPrecoTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
     }
 
     public void calcularValorTotal() {
+        getItens().forEach(ItemPedido::calcularPrecoTotal);
         valorTotalProdutos = getValorTotalProdutos();
         valorTotalServicos = getValorTotalServicos();
         subTotal = valorTotalProdutos.add(valorTotalServicos);
