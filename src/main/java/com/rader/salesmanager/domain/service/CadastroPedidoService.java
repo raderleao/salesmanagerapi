@@ -28,9 +28,7 @@ public class CadastroPedidoService {
     private CadastroProdutoService cadastroProduto;
 
     public Pedido emitir(Pedido pedido) {
-        pedido.abrir();
         validarItens(pedido);
-
         pedido.calcularValorTotal();
         return pedidoRepository.save(pedido);
     }

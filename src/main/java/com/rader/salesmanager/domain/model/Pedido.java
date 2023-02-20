@@ -45,11 +45,9 @@ public class Pedido {
             calcularValorTotal();
         }
     }
+
     public void fechar(){
         this.setStatus(StatusPedido.FECHADO);
-    }
-    public void abrir(){
-        this.setStatus(StatusPedido.ABERTO);
     }
     public void aplicarDesconto(BigDecimal percentualDesconto) {
         if (status != StatusPedido.ABERTO) {
