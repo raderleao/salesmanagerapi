@@ -44,9 +44,6 @@ public class CadastroPedidoService {
 
     private void validarItens(Pedido pedido){
 
-
-        psService.buscarOuFalhar(pedido.getItens().get(0).getProdutoServico().getId());
-
         pedido.getItens().forEach(item -> {
             ProdutoServico produtoServico = psService.buscarOuFalhar(item.getProdutoServico().getId());
 
