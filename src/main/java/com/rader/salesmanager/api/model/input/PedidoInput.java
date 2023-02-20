@@ -20,6 +20,7 @@ public class PedidoInput {
 
         @ApiModelProperty(example = "ad084f43-7d41-4735-b207-7e3f09c533f2", required = true)
         @Valid
+        @NotNull
         private UUID id;
 
         @NotNull

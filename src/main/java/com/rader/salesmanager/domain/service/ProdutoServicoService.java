@@ -15,8 +15,10 @@ public class ProdutoServicoService {
     private ProdutoServicoRepository psRepository;
 
     public ProdutoServico buscarOuFalhar(UUID id) {
+
         return psRepository.findById(id)
                 .orElseThrow(() -> new EntidadeNaoEncontradaException(id.toString()));
-
     }
+
 }
+
