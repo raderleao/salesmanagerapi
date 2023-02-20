@@ -69,6 +69,7 @@ public class PedidoController {
     public PedidoModel adicionar(@Valid @RequestBody PedidoInput pedidoInput) {
         try {
             Pedido novoPedido = pedidoInputDisassembler.toDomainObject(pedidoInput);
+
             novoPedido = cadastroPedido.emitir(novoPedido);
 
             return pedidoModelAssembler.toModel(novoPedido);
