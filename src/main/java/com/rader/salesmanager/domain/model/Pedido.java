@@ -1,7 +1,10 @@
 package com.rader.salesmanager.domain.model;
 
+import com.rader.salesmanager.domain.event.PedidoCanceladoEvent;
+import com.rader.salesmanager.domain.exception.NegocioException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,7 +14,7 @@ import java.util.UUID;
 
 @Data
 @Entity
-public class Pedido {
+public class Pedido extends AbstractAggregateRoot<Pedido> {
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue
@@ -21,7 +24,6 @@ public class Pedido {
     private BigDecimal valorTotalProdutos;
     private BigDecimal subTotal;
     private BigDecimal desconto;
-    private BigDecimal valorTotalProdutosDesconto;
     private BigDecimal valorTotal;
 
     private StatusPedido status = StatusPedido.ABERTO;
@@ -46,20 +48,35 @@ public class Pedido {
         }
     }
 
+    public void abrir(){
+        this.setDesconto(BigDecimal.ZERO);
+    }
+
     public void fechar(){
         this.setStatus(StatusPedido.FECHADO);
     }
+
+    public void cancelar() {
+        setStatus(StatusPedido.CANCELADO);
+        registerEvent(new PedidoCanceladoEvent(this));
+    }
+
+    public boolean podeSerFechado(){
+        return getStatus().podeAlterarPara(StatusPedido.FECHADO);
+    }
+
+    public boolean podeSerCancelado(){
+        return getStatus().podeAlterarPara(StatusPedido.CANCELADO);
+    }
+
+    public boolean podeDarDesconto() {return getStatus() == StatusPedido.ABERTO;}
+
     public void aplicarDesconto(BigDecimal percentualDesconto) {
         if (status != StatusPedido.ABERTO) {
-            throw new IllegalStateException("Não é possível aplicar desconto em um pedido que não está aberto.");
+            throw new NegocioException("Não é possível aplicar desconto em um pedido que não está com status aberto.");
         }
-        BigDecimal valorDescontoProdutos = getValorTotalProdutos().multiply(percentualDesconto.divide(BigDecimal.valueOf(100)));
-        for (ItemPedido item : itens) {
-            if (item.getProdutoServico().getProduto()) {
-                BigDecimal valorDescontoItem = item.getPrecoUnitario().multiply(percentualDesconto.divide(BigDecimal.valueOf(100)));
-                item.setPrecoUnitario(item.getPrecoUnitario().subtract(valorDescontoItem));
-            }
-        }
+        var valorDescontoProdutos = getValorTotalProdutos().multiply(percentualDesconto.divide(BigDecimal.valueOf(100)));
+
         desconto = valorDescontoProdutos;
         calcularValorTotal();
     }
@@ -80,10 +97,22 @@ public class Pedido {
     }
 
     public void calcularValorTotal() {
+
         getItens().forEach(ItemPedido::calcularPrecoTotal);
         valorTotalProdutos = getValorTotalProdutos();
         valorTotalServicos = getValorTotalServicos();
         subTotal = valorTotalProdutos.add(valorTotalServicos);
-        valorTotal = valorTotalProdutos.add(valorTotalServicos);
+        valorTotal = valorTotalProdutos.add(valorTotalServicos).subtract(desconto);
+    }
+
+    private void setStatus(StatusPedido novoStatus) {
+        if (getStatus().naoPodeAlterarPara(novoStatus)) {
+            throw new NegocioException(
+                    String.format("Status do pedido não pode ser alterado de %s para %s",
+                            getId(), getStatus().getDescricao(),
+                            novoStatus.getDescricao()));
+        }
+
+        this.status = novoStatus;
     }
 }

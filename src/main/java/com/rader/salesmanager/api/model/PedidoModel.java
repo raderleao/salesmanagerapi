@@ -18,11 +18,17 @@ public class PedidoModel extends RepresentationModel<PedidoModel> {
     @ApiModelProperty(example = "f9981ca4-5a5e-4da3-af04-933861df3e55")
     private UUID id;
 
+    @ApiModelProperty(example = "245.65")
+    private BigDecimal valorTotalProdutos;
+
+    @ApiModelProperty(example = "230.47")
+    private BigDecimal valorTotalServicos;
+
     @ApiModelProperty(example = "298.90")
     private BigDecimal subtotal;
 
-    @ApiModelProperty(example = "10.00")
-    private BigDecimal taxaFrete;
+    @ApiModelProperty(example = "37.90")
+    private BigDecimal desconto;
 
     @ApiModelProperty(example = "308.90")
     private BigDecimal valorTotal;

@@ -11,7 +11,7 @@ import com.rader.salesmanager.domain.exception.EntidadeNaoEncontradaException;
 import com.rader.salesmanager.domain.exception.NegocioException;
 import com.rader.salesmanager.domain.filter.PedidoFilter;
 import com.rader.salesmanager.domain.model.Pedido;
-import com.rader.salesmanager.domain.service.CadastroPedidoService;
+import com.rader.salesmanager.domain.service.EmissaoPedidoService;
 import com.rader.salesmanager.infrastructure.repository.spec.PedidoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -38,7 +38,7 @@ public class PedidoController {
     private PedidoInputDisassembler pedidoInputDisassembler;
 
     @Autowired
-    private CadastroPedidoService cadastroPedido;
+    private EmissaoPedidoService cadastroPedido;
 
     @Autowired
     PagedResourcesAssembler<Pedido> pagedResourcesAssembler;
@@ -77,6 +77,7 @@ public class PedidoController {
             throw new NegocioException(e.getMessage(), e);
         }
     }
+
 
     private Pageable traduzirPageable(Pageable apiPageable) {
         var mapeamento = Map.of(

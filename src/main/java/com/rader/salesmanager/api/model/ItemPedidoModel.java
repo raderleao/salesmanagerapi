@@ -13,7 +13,7 @@ import java.util.UUID;
 public class ItemPedidoModel extends RepresentationModel<ItemPedidoModel> {
 
     @ApiModelProperty(example = "1")
-    private UUID Id;
+    private UUID id;
 
     @ApiModelProperty(example = "Porco com molho agridoce")
     private String produtoServicoNome;
@@ -29,8 +29,5 @@ public class ItemPedidoModel extends RepresentationModel<ItemPedidoModel> {
 
     @ApiModelProperty(example = "157.80")
     private BigDecimal precoTotal;
-
-    @ApiModelProperty(example = "157.80")
-    private BigDecimal desconto;
 
 }

@@ -18,8 +18,6 @@ public class ProdutoServico {
     @GeneratedValue
     private UUID id;
 
-    private String codigo;
-
     private Boolean produto = Boolean.FALSE;
 
     @Column(nullable = false)
@@ -49,11 +47,7 @@ public class ProdutoServico {
     public void inativar() {
         setAtivo(false);
     }
-    @PrePersist
-    private void gerarCodigo() {
 
-        setCodigo(UUID.randomUUID().toString());
-    }
 
 
 }

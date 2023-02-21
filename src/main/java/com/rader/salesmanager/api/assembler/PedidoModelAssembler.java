@@ -21,6 +21,7 @@ public class PedidoModelAssembler
 
 
     public PedidoModelAssembler() {
+
         super(PedidoController.class, PedidoModel.class);
     }
 
@@ -29,26 +30,26 @@ public class PedidoModelAssembler
         PedidoModel pedidoModel = createModelWithId(pedido.getId(), pedido);
         modelMapper.map(pedido, pedidoModel);
 
-       /* pedidoModel.add(salesLinks.linkToPedidos("pedidos"));
-
-        if(pedido.podeSerConfirmado()) {
-            pedidoModel.add(salesLinks.linkToConfirmacaoPedido(pedido.getCodigo(), "confirmar"));
+        pedidoModel.add(salesLinks.linkToPedidos("pedidos"));
+        if(pedido.podeSerFechado()) {
+            pedidoModel.add(salesLinks.linkToFechamentoPedido(pedido.getId().toString(), "fechar"));
         }
         if(pedido.podeSerCancelado()) {
-            pedidoModel.add(salesLinks.linkToCancelamentoPedido(pedido.getCodigo(), "cancelar"));
+            pedidoModel.add(salesLinks.linkToCancelamentoPedido(pedido.getId().toString(), "cancelar"));
         }
-        if(pedido.podeSerEntregue()) {
-            pedidoModel.add(salesLinks.linkToEntregaPedido(pedido.getCodigo(), "entregar"));
-        }*/
+        if(pedido.podeDarDesconto()) {
+            pedidoModel.add(salesLinks.linkToDescontoPedido(pedido.getId().toString(), "descontar"));
+        }
 
-
-/*
-pedidoModel.getItens().forEach(item -> {
-            item.add(salesLinks.linkToProduto(item.getProdutoServicoId(), "produto"));
-        });*/
-
+        pedidoModel.getItens().forEach(item -> {
+            item.add(salesLinks.linkToProduto(
+                    pedidoModel.getId().toString(), "produto"));
+        });
 
         return pedidoModel;
     }
+
+
+
 
 }

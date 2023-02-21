@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @Transactional
 @Service
-public class CadastroPedidoService {
+public class EmissaoPedidoService {
 
     @Autowired
     private PedidoRepository pedidoRepository;
@@ -28,17 +28,14 @@ public class CadastroPedidoService {
     private CadastroProdutoService cadastroProduto;
 
     public Pedido emitir(Pedido pedido) {
+        pedido.abrir();
         validarItens(pedido);
         pedido.calcularValorTotal();
         return pedidoRepository.save(pedido);
     }
 
-    public Pedido fechar(Pedido pedido) {
-        pedido.fechar();
-        return pedidoRepository.save(pedido);
-    }
-
     private void validarItens(Pedido pedido){
+        if(pedido.getDesconto() == null) pedido.setDesconto(BigDecimal.ZERO);
 
         pedido.getItens().forEach(item -> {
             ProdutoServico produtoServico = psService
@@ -48,32 +45,8 @@ public class CadastroPedidoService {
             item.setProdutoServico(produtoServico);
             item.setPrecoUnitario(produtoServico.getPreco());
         });
-    }
 
-    public void adicionarItens(Pedido pedido) {
-        pedido.getItens().forEach(item -> {
-            ProdutoServico produto = cadastroProduto
-                    .buscarOuFalhar(item.getProdutoServico().getId());
-
-            item.setProdutoServico(produto);
-            item.setPrecoUnitario(produto.getPreco());
-
-            pedido.adicionarItem(item);
-        });
-        pedido.calcularValorTotal();
-    }
-
-    public void removerItens(Pedido pedido) {
-        pedido.getItens().forEach(item -> {
-            ProdutoServico produto = cadastroProduto
-                    .buscarOuFalhar(item.getProdutoServico().getId());
-            pedido.removerItem(item);
-        });
-    }
-
-    public void darDesconto(Pedido pedido, BigDecimal percentualDesconto){
-        buscarOuFalhar(pedido.getId());
-        pedido.aplicarDesconto(percentualDesconto);
+        if(pedido.getDesconto() == null) pedido.setDesconto(BigDecimal.ZERO);
     }
 
     public Page<Pedido> buscarTodos(
@@ -86,5 +59,4 @@ public class CadastroPedidoService {
         return pedidoRepository.findById(id)
                 .orElseThrow(() -> new PedidoNaoEncontradoException(id.toString()));
     }
-
 }
