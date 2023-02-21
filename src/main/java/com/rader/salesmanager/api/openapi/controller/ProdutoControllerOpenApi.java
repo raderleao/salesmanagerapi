@@ -8,10 +8,9 @@ import io.swagger.annotations.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.UUID;
 
@@ -26,6 +25,7 @@ public interface ProdutoControllerOpenApi {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     PagedModel<ProdutoModel> pesquisar(ProdutoFilter filtro,
                                        @PageableDefault(size = 10) Pageable pageable);
+
 
     @ApiOperation("Busca um produto")
     @ApiResponses({
@@ -45,11 +45,13 @@ public interface ProdutoControllerOpenApi {
             @ApiParam(name = "corpo", value = "Representação de um novo produto", required = true)
             ProdutoInput produtoInput);
 
+
     @ApiOperation("Atualiza um produto")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Produto atualizado"),
             @ApiResponse(code = 404, message = "Produto não encontrado", response = Problem.class)
     })
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     ProdutoModel atualizar(
 
             @ApiParam(value = "ID do produto", example = "9b6d2a6a-4626-4267-98b5-8d704e26245b", required = true)
@@ -58,36 +60,5 @@ public interface ProdutoControllerOpenApi {
             @ApiParam(name = "corpo", value = "Representação de um produto com os novos dados",
                     required = true)
             ProdutoInput produtoInput);
-
-    @ApiOperation("Exclui um produto por ID")
-    @ApiResponses({
-            @ApiResponse(code = 204, message = "Produto excluído"),
-            @ApiResponse(code = 404, message = "Produto não encontrado", response = Problem.class)
-    })
-    void remover(
-            @ApiParam(value = "ID de um Produto", example = "56f784d6-2c44-47c6-9065-685e5c5d5e5a", required = true)
-            UUID Id);
-
-    @ApiOperation("Ativa um produto por ID")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Produto ativado"),
-            @ApiResponse(code = 404, message = "Produto não encontrado", response = Problem.class)
-    })
-    @PutMapping(path ="/{id}/ativo", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> ativar(
-            @ApiParam(value = "ID de um Produto", example = "56f784d6-2c44-47c6-9065-685e5c5d5e5a", required = true)
-            @PathVariable UUID id);
-
-    @ApiOperation("Inativa um produto por ID")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Produto inativado"),
-            @ApiResponse(code = 404, message = "Produto não encontrado", response = Problem.class)
-    })
-    @DeleteMapping(path ="/{id}/ativo", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> inativar(
-            @ApiParam(value = "ID de um Produto", example = "56f784d6-2c44-47c6-9065-685e5c5d5e5a", required = true)
-            @PathVariable UUID id);
 
 }

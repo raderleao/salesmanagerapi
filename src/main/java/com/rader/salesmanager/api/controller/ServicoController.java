@@ -20,7 +20,6 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -84,31 +83,6 @@ public class ServicoController implements ServicoControllerOpenApi {
         return servicoModelAssembler
                 .toModel(cadastroServico.salvar(servico));
     }
-
-    @Override
-    @PutMapping(path ="/{produtoId}/ativo", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> ativar(@PathVariable UUID id) {
-        cadastroServico.ativar(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    @DeleteMapping(path ="/{produtoId}/inativar", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Void> inativar(@PathVariable UUID id) {
-        cadastroServico.inativar(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @Override
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void remover(@PathVariable UUID id) {
-        cadastroServico.excluir(id);
-    }
-
-
 
     private Pageable traduzirPageable(Pageable apiPageable) {
         var mapeamento = Map.of(

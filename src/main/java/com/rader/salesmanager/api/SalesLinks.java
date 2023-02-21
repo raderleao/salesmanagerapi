@@ -1,6 +1,5 @@
 package com.rader.salesmanager.api;
 
-import com.rader.salesmanager.api.controller.FluxoPedidoController;
 import com.rader.salesmanager.api.controller.PedidoController;
 import com.rader.salesmanager.api.controller.ProdutoController;
 import org.springframework.hateoas.*;
@@ -34,17 +33,17 @@ public class SalesLinks {
     }
 
     public Link linkToFechamentoPedido(String codigoPedido, String rel) {
-        return linkTo(methodOn(FluxoPedidoController.class)
+        return linkTo(methodOn(PedidoController.class)
                 .fechar(codigoPedido)).withRel(rel);
     }
 
     public Link linkToCancelamentoPedido(String codigoPedido, String rel) {
-        return linkTo(methodOn(FluxoPedidoController.class)
+        return linkTo(methodOn(PedidoController.class)
                 .cancelar(codigoPedido)).withRel(rel);
     }
 
     public Link linkToDescontoPedido(String idPedido, String rel) {
-        return linkTo(methodOn(FluxoPedidoController.class)
+        return linkTo(methodOn(PedidoController.class)
                 .descontar(idPedido, null)).slash(idPedido).withRel(rel);
     }
 
@@ -54,8 +53,8 @@ public class SalesLinks {
                 .withRel(rel);
     }
 
-    public Link linkToProduto(String produtoId) {
-        return linkToProduto(produtoId, IanaLinkRelations.SELF.value());
+    public Link linkToProdutosServicos(String produtoservicoId) {
+        return linkToProduto(produtoservicoId, IanaLinkRelations.SELF.value());
     }
 
 }

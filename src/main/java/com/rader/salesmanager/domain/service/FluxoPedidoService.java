@@ -20,7 +20,7 @@ public class FluxoPedidoService {
     private EmissaoPedidoService emissaoPedido;
 
     @Autowired
-    private ProdutoServicoService psService;
+    private CadastroProdutoServicoService psService;
 
     @Transactional
     public void darDesconto (UUID idPedido, BigDecimal pctDesconto){

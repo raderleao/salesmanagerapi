@@ -123,8 +123,13 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline-reader</artifactId>
+            <version>3.22.0</version>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 	<build>
 		<plugins>
 			<plugin>

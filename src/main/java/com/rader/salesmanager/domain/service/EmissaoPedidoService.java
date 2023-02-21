@@ -1,6 +1,7 @@
 package com.rader.salesmanager.domain.service;
 
 import com.rader.salesmanager.domain.exception.PedidoNaoEncontradoException;
+import com.rader.salesmanager.domain.exception.ProdutoServicoNaoAtivoException;
 import com.rader.salesmanager.domain.model.Pedido;
 import com.rader.salesmanager.domain.model.ProdutoServico;
 import com.rader.salesmanager.domain.repository.PedidoRepository;
@@ -22,7 +23,7 @@ public class EmissaoPedidoService {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private ProdutoServicoService psService;
+    private CadastroProdutoServicoService psService;
 
     @Autowired
     private CadastroProdutoService cadastroProduto;
@@ -37,13 +38,17 @@ public class EmissaoPedidoService {
     private void validarItens(Pedido pedido){
         if(pedido.getDesconto() == null) pedido.setDesconto(BigDecimal.ZERO);
 
+
         pedido.getItens().forEach(item -> {
             ProdutoServico produtoServico = psService
                     .buscarOuFalhar(item.getProdutoServico().getId());
-
+            if(!produtoServico.getAtivo()) {
+                throw new ProdutoServicoNaoAtivoException(produtoServico.getId());
+            }
             item.setPedido(pedido);
             item.setProdutoServico(produtoServico);
             item.setPrecoUnitario(produtoServico.getPreco());
+
         });
 
         if(pedido.getDesconto() == null) pedido.setDesconto(BigDecimal.ZERO);

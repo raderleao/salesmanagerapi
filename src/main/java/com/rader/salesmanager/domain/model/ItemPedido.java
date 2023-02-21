@@ -27,6 +27,14 @@ public class ItemPedido {
     @JoinColumn(name = "produto_servico_id")
     private ProdutoServico produtoServico;
 
+    public ItemPedido() {
+    }
+
+    public ItemPedido(ProdutoServico produtoServico, Integer quantidade) {
+        this.produtoServico = produtoServico;
+        this.quantidade = quantidade;
+    }
+
     public void calcularPrecoTotal() {
         BigDecimal precoUnitario = this.getPrecoUnitario();
         Integer quantidade = this.getQuantidade();

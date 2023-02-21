@@ -41,11 +41,6 @@ public class PedidoModelAssembler
             pedidoModel.add(salesLinks.linkToDescontoPedido(pedido.getId().toString(), "descontar"));
         }
 
-        pedidoModel.getItens().forEach(item -> {
-            item.add(salesLinks.linkToProduto(
-                    pedidoModel.getId().toString(), "produto"));
-        });
-
         return pedidoModel;
     }
 

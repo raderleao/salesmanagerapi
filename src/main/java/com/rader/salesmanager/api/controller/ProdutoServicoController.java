@@ -4,13 +4,14 @@ import com.rader.salesmanager.api.SalesLinks;
 import com.rader.salesmanager.api.assembler.ProdutoInputDisassembler;
 import com.rader.salesmanager.api.assembler.ProdutoModelAssembler;
 import com.rader.salesmanager.api.model.ProdutoModel;
-import com.rader.salesmanager.api.model.input.ProdutoInput;
-import com.rader.salesmanager.api.openapi.controller.ProdutoControllerOpenApi;
+import com.rader.salesmanager.api.openapi.controller.ProdutoServicoControllerOpenApi;
 import com.rader.salesmanager.core.data.PageWrapper;
 import com.rader.salesmanager.core.data.PageableTranslator;
+import com.rader.salesmanager.domain.exception.NegocioException;
+import com.rader.salesmanager.domain.exception.ProdutoServicoNaoEncontradoException;
 import com.rader.salesmanager.domain.filter.ProdutoFilter;
 import com.rader.salesmanager.domain.model.ProdutoServico;
-import com.rader.salesmanager.domain.service.CadastroProdutoService;
+import com.rader.salesmanager.domain.service.CadastroProdutoServicoService;
 import com.rader.salesmanager.infrastructure.repository.spec.ProdutoServicoSpecs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,21 +21,22 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(path = "/produtos")
-public class ProdutoController implements ProdutoControllerOpenApi {
+@RequestMapping(path = "/produtos-servicos")
+public class ProdutoServicoController implements ProdutoServicoControllerOpenApi {
 
     @Autowired
     private ProdutoModelAssembler produtoModelAssembler;
 
     @Autowired
-    private CadastroProdutoService cadastroProduto;
+    private CadastroProdutoServicoService psService;
 
     @Autowired
     private ProdutoInputDisassembler produtoInputDisassembler;
@@ -45,12 +47,12 @@ public class ProdutoController implements ProdutoControllerOpenApi {
     @Autowired
     private SalesLinks salesLinks;
 
-    @Override
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public PagedModel<ProdutoModel> pesquisar(ProdutoFilter filtro,
                                               @PageableDefault(size = 10) Pageable pageable){
         Pageable pageableTraduzido = traduzirPageable(pageable);
-        Page<ProdutoServico> produtosPage = cadastroProduto.buscarTodos(
+        Page<ProdutoServico> produtosPage = psService.buscarTodos(
                 ProdutoServicoSpecs.usandoFiltro(filtro), pageableTraduzido);
 
         produtosPage = new PageWrapper<>(produtosPage, pageable);
@@ -58,30 +60,41 @@ public class ProdutoController implements ProdutoControllerOpenApi {
         return pagedResourcesAssembler.toModel(produtosPage, produtoModelAssembler);
     }
 
-    @Override
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ProdutoModel buscar(@PathVariable UUID id) {
-        return produtoModelAssembler.toModel(cadastroProduto.buscarOuFalhar(id));
+        return produtoModelAssembler.toModel(psService.buscarOuFalhar(id));
+    }
+
+    @PutMapping(path ="/{id}/ativo", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> ativar(@PathVariable String id) {
+        psService.ativar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(path ="/{id}/inativar", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> inativar(@PathVariable String id) {
+        psService.inativar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/ativacoes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Void> ativarMultiplos(@RequestBody List<String> psId ){
+        try {
+            psService.ativar(psId);
+        } catch (ProdutoServicoNaoEncontradoException e) {
+            throw new NegocioException(e.getMessage(), e);
+        }
+        return ResponseEntity.noContent().build();
     }
 
     @Override
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.CREATED)
-    public ProdutoModel adicionar(@RequestBody @Valid ProdutoInput produtoInput) {
-        ProdutoServico produto = produtoInputDisassembler.toDomainObject(produtoInput);
-
-        return produtoModelAssembler
-                .toModel(cadastroProduto.salvar(produto));
-    }
-
-    @Override
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProdutoModel atualizar(@PathVariable UUID id, @RequestBody @Valid ProdutoInput produtoInput) {
-        ProdutoServico produto = cadastroProduto.buscarOuFalhar(id);
-        produtoInputDisassembler.copyToDomainObject(produtoInput, produto);
-
-        return produtoModelAssembler
-                .toModel(cadastroProduto.salvar(produto));
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void remover(@PathVariable UUID id) {
+        psService.excluir(id);
     }
 
     private Pageable traduzirPageable(Pageable apiPageable) {

@@ -1,6 +1,7 @@
 package com.rader.salesmanager.domain.model;
 
 import com.rader.salesmanager.domain.event.PedidoCanceladoEvent;
+import com.rader.salesmanager.domain.event.PedidoFechadoEvent;
 import com.rader.salesmanager.domain.exception.NegocioException;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -54,6 +55,7 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
 
     public void fechar(){
         this.setStatus(StatusPedido.FECHADO);
+        registerEvent(new PedidoFechadoEvent(this));
     }
 
     public void cancelar() {
@@ -105,7 +107,7 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
         valorTotal = valorTotalProdutos.add(valorTotalServicos).subtract(desconto);
     }
 
-    private void setStatus(StatusPedido novoStatus) {
+    public void setStatus(StatusPedido novoStatus) {
         if (getStatus().naoPodeAlterarPara(novoStatus)) {
             throw new NegocioException(
                     String.format("Status do pedido não pode ser alterado de %s para %s",

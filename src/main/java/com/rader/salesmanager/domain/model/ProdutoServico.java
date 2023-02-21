@@ -34,7 +34,7 @@ public class ProdutoServico {
     private List<ItemPedido> itensPedidos = new ArrayList<>();
 
     @PreRemove
-    private void verificarSePodeExcluir() {
+    public void verificarSePodeExcluir() {
         if (!itensPedidos.isEmpty()) {
             throw new IllegalStateException("Não é possível excluir um produto ou serviço associado a um pedido.");
         }
@@ -47,7 +47,5 @@ public class ProdutoServico {
     public void inativar() {
         setAtivo(false);
     }
-
-
 
 }

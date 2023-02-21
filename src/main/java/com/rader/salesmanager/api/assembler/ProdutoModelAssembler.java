@@ -32,10 +32,8 @@ public class ProdutoModelAssembler
 
         modelMapper.map(produto, produtoModel);
 
-/*produtoServicoModel.add(salesLinks
-                .linkToProdutosServicos(produtoServico.getId(), "produtos"));*/
-
-
+        produtoModel.add(salesLinks
+                .linkToProdutosServicos(produto.getId().toString()));
         return produtoModel;
     }
 

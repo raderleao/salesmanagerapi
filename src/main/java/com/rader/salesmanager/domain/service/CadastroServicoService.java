@@ -1,11 +1,9 @@
 package com.rader.salesmanager.domain.service;
 
-import com.rader.salesmanager.domain.exception.EntidadeEmUsoException;
 import com.rader.salesmanager.domain.exception.ServicoNaoEncontradoException;
 import com.rader.salesmanager.domain.model.ProdutoServico;
 import com.rader.salesmanager.domain.repository.ProdutoServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,31 +27,6 @@ public class CadastroServicoService {
         ps.setProduto(false);
         return psRepository.save(ps);
 
-    }
-
-    @Transactional
-    public void excluir(UUID id) {
-       ProdutoServico servico = buscarOuFalhar(id);
-        try {
-            psRepository.delete(servico);
-            psRepository.flush();
-
-        } catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException(
-                    String.format(MSG_SERVICO_EM_USO, id));
-        }
-    }
-
-    @Transactional
-    public void ativar(UUID id) {
-        ProdutoServico servico = buscarOuFalhar(id);
-        servico.ativar();
-    }
-
-    @Transactional
-    public void inativar(UUID id) {
-        ProdutoServico servico = buscarOuFalhar(id);
-        servico.ativar();
     }
 
     public Page<ProdutoServico> buscarTodos(

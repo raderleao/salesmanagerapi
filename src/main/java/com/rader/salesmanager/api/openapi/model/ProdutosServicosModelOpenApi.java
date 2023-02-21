@@ -1,6 +1,6 @@
 package com.rader.salesmanager.api.openapi.model;
 
-import com.rader.salesmanager.api.model.ProdutoModel;
+import com.rader.salesmanager.api.model.ProdutoServicoModel;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import org.springframework.hateoas.Links;
@@ -9,16 +9,16 @@ import java.util.List;
 
 @ApiModel("ProdutosModel")
 @Data
-public class ProdutosModelOpenApi {
+public class ProdutosServicosModelOpenApi {
 
-    private ProdutosEmbeddedModelOpenApi _embedded;
+    private ProdutosServicosModelOpenApi _embedded;
     private Links _links;
 
-    @ApiModel("ProdutosEmbeddedModel")
+    @ApiModel("ProdutosServicosEmbeddedModel")
     @Data
     public class ProdutosEmbeddedModelOpenApi {
 
-        private List<ProdutoModel> produtos;
+        private List<ProdutoServicoModel> produtosservicos;
 
     }
 }
