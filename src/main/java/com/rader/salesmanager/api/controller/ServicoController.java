@@ -43,7 +43,7 @@ public class ServicoController implements ServicoControllerOpenApi {
     PagedResourcesAssembler<ProdutoServico> pagedResourcesAssembler;
 
     @Autowired
-    private SalesLinks algaLinks;
+    private SalesLinks salesLinks;
 
     @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
