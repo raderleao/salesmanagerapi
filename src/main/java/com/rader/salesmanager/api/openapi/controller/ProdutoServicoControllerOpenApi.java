@@ -1,7 +1,7 @@
 package com.rader.salesmanager.api.openapi.controller;
 
 import com.rader.salesmanager.api.exceptionhandler.Problem;
-import com.rader.salesmanager.api.model.ProdutoModel;
+import com.rader.salesmanager.api.model.ProdutoServicoModel;
 import com.rader.salesmanager.domain.filter.ProdutoFilter;
 import io.swagger.annotations.*;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +24,8 @@ public interface ProdutoServicoControllerOpenApi {
                     name = "campos", paramType = "query", type = "string")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    PagedModel<ProdutoModel> pesquisar(ProdutoFilter filtro,
-                                       @PageableDefault(size = 10) Pageable pageable);
+    PagedModel<ProdutoServicoModel> pesquisar(ProdutoFilter filtro,
+                                              @PageableDefault(size = 10) Pageable pageable);
 
 
     @ApiOperation("Busca um produto ou serviço")
@@ -33,7 +33,7 @@ public interface ProdutoServicoControllerOpenApi {
             @ApiResponse(code = 400, message = "ID do serviço inválido", response = Problem.class),
     })
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    ProdutoModel buscar(
+    ProdutoServicoModel buscar(
 
             @ApiParam(value = "ID de um produto ou serviço", example = "9b6d2a6a-4626-4267-98b5-8d704e26245b", required = true)
             UUID Id);

@@ -1,7 +1,7 @@
 package com.rader.salesmanager.api;
 
 import com.rader.salesmanager.api.controller.PedidoController;
-import com.rader.salesmanager.api.controller.ProdutoController;
+import com.rader.salesmanager.api.controller.ProdutoServicoController;
 import org.springframework.hateoas.*;
 import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.stereotype.Component;
@@ -44,17 +44,19 @@ public class SalesLinks {
 
     public Link linkToDescontoPedido(String idPedido, String rel) {
         return linkTo(methodOn(PedidoController.class)
-                .descontar(idPedido, null)).slash(idPedido).withRel(rel);
+                .descontar(idPedido, null)).withRel(rel);
     }
 
-    public Link linkToProduto(String produtoId, String rel) {
-        return linkTo(methodOn(ProdutoController.class)
+    public Link linkToProdutosServicos(String produtoId) {
+        return linkTo(methodOn(ProdutoServicoController.class)
                 .buscar(UUID.fromString(produtoId)))
-                .withRel(rel);
+                .withRel(IanaLinkRelations.SELF.value());
     }
 
-    public Link linkToProdutosServicos(String produtoservicoId) {
+   /* public Link linkToProdutosServicos(String produtoservicoId) {
         return linkToProduto(produtoservicoId, IanaLinkRelations.SELF.value());
-    }
+    }*/
+
+
 
 }

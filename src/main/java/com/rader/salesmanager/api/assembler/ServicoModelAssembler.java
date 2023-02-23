@@ -1,9 +1,7 @@
 package com.rader.salesmanager.api.assembler;
 
 import com.rader.salesmanager.api.SalesLinks;
-import com.rader.salesmanager.api.controller.ProdutoController;
 import com.rader.salesmanager.api.controller.ServicoController;
-import com.rader.salesmanager.api.model.ProdutoModel;
 import com.rader.salesmanager.api.model.ServicoModel;
 import com.rader.salesmanager.domain.model.ProdutoServico;
 import org.modelmapper.ModelMapper;
@@ -33,9 +31,8 @@ public class ServicoModelAssembler
 
         modelMapper.map(servico, servicoModel);
 
-        /*produtoServicoModel.add(salesLinks
-                .linkToProdutosServicos(produtoServico.getId(), "produtos/servicos"));
-*/
+        servicoModel.add(salesLinks
+                .linkToProdutosServicos(servico.getId().toString()));
         return servicoModel;
     }
 

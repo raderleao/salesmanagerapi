@@ -2,8 +2,8 @@ package com.rader.salesmanager.api.controller;
 
 import com.rader.salesmanager.api.SalesLinks;
 import com.rader.salesmanager.api.assembler.ProdutoInputDisassembler;
-import com.rader.salesmanager.api.assembler.ProdutoModelAssembler;
-import com.rader.salesmanager.api.model.ProdutoModel;
+import com.rader.salesmanager.api.assembler.ProdutoServicoModelAssembler;
+import com.rader.salesmanager.api.model.ProdutoServicoModel;
 import com.rader.salesmanager.api.openapi.controller.ProdutoServicoControllerOpenApi;
 import com.rader.salesmanager.core.data.PageWrapper;
 import com.rader.salesmanager.core.data.PageableTranslator;
@@ -33,7 +33,7 @@ import java.util.UUID;
 public class ProdutoServicoController implements ProdutoServicoControllerOpenApi {
 
     @Autowired
-    private ProdutoModelAssembler produtoModelAssembler;
+    private ProdutoServicoModelAssembler psModelAssembler;
 
     @Autowired
     private CadastroProdutoServicoService psService;
@@ -49,20 +49,20 @@ public class ProdutoServicoController implements ProdutoServicoControllerOpenApi
 
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<ProdutoModel> pesquisar(ProdutoFilter filtro,
-                                              @PageableDefault(size = 10) Pageable pageable){
+    public PagedModel<ProdutoServicoModel> pesquisar(ProdutoFilter filtro,
+                                                     @PageableDefault(size = 10) Pageable pageable){
         Pageable pageableTraduzido = traduzirPageable(pageable);
-        Page<ProdutoServico> produtosPage = psService.buscarTodos(
+        Page<ProdutoServico> psPage = psService.buscarTodos(
                 ProdutoServicoSpecs.usandoFiltro(filtro), pageableTraduzido);
 
-        produtosPage = new PageWrapper<>(produtosPage, pageable);
+        psPage = new PageWrapper<>(psPage, pageable);
 
-        return pagedResourcesAssembler.toModel(produtosPage, produtoModelAssembler);
+        return pagedResourcesAssembler.toModel(psPage, psModelAssembler);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ProdutoModel buscar(@PathVariable UUID id) {
-        return produtoModelAssembler.toModel(psService.buscarOuFalhar(id));
+    public ProdutoServicoModel buscar(@PathVariable UUID id) {
+        return psModelAssembler.toModel(psService.buscarOuFalhar(id));
     }
 
     @PutMapping(path ="/{id}/ativo", produces = MediaType.APPLICATION_JSON_VALUE)
