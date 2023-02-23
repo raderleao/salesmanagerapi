@@ -46,13 +46,12 @@ public class FluxoPedidoService {
     @Transactional
     public void adicionarItens(Pedido pedido) {
         pedido.getItens().forEach(item -> {
-            ProdutoServico produto = psService
-                    .buscarOuFalhar(item.getProdutoServico().getId());
+                    ProdutoServico produto = psService
+                            .buscarOuFalhar(item.getProdutoServico().getId());
 
-            item.setProdutoServico(produto);
-            item.setPrecoUnitario(produto.getPreco());
-
-            pedido.adicionarItem(item);
+                    item.setProdutoServico(produto);
+                    item.setPrecoUnitario(produto.getPreco());
+                    pedido.adicionarItem(item);
         });
         pedido.calcularValorTotal();
         pedidoRepository.save(pedido);

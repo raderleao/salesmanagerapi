@@ -2,8 +2,11 @@ package com.rader.salesmanager.domain.service;
 
 import com.rader.salesmanager.domain.exception.PedidoNaoEncontradoException;
 import com.rader.salesmanager.domain.exception.ProdutoServicoNaoAtivoException;
+import com.rader.salesmanager.domain.exception.ProdutoServicoNaoEncontradoException;
+import com.rader.salesmanager.domain.model.ItemPedido;
 import com.rader.salesmanager.domain.model.Pedido;
 import com.rader.salesmanager.domain.model.ProdutoServico;
+import com.rader.salesmanager.domain.repository.ItemPedidoRepository;
 import com.rader.salesmanager.domain.repository.PedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +27,9 @@ public class EmissaoPedidoService {
 
     @Autowired
     private CadastroProdutoServicoService psService;
+
+    @Autowired
+    private ItemPedidoRepository itemPedidoRepository;
 
     @Autowired
     private CadastroProdutoService cadastroProduto;
@@ -63,5 +69,10 @@ public class EmissaoPedidoService {
     public Pedido buscarOuFalhar(UUID id) {
         return pedidoRepository.findById(id)
                 .orElseThrow(() -> new PedidoNaoEncontradoException(id.toString()));
+    }
+
+    public ItemPedido buscarOuFalharItemPedido(UUID id) {
+        return itemPedidoRepository.findById(id)
+                .orElseThrow(() -> new ProdutoServicoNaoEncontradoException(id.toString()));
     }
 }

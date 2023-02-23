@@ -33,9 +33,7 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
     private List<ItemPedido> itens = new ArrayList<>();
 
     public void adicionarItem(ItemPedido item) {
-        if (!item.getProdutoServico().getAtivo()) {
-            throw new IllegalArgumentException("Não é possível adicionar um produto ou serviço desativado em um pedido.");
-        }
+
         itens.add(item);
         item.setPedido(this);
         calcularValorTotal();
@@ -99,6 +97,11 @@ public class Pedido extends AbstractAggregateRoot<Pedido> {
     }
 
     public void calcularValorTotal() {
+        valorTotal = (valorTotal == null) ? BigDecimal.ZERO : valorTotal;
+        valorTotalProdutos = (valorTotalProdutos == null) ? BigDecimal.ZERO : valorTotalProdutos;
+        valorTotalServicos = (valorTotalServicos == null) ? BigDecimal.ZERO : valorTotalServicos;
+        subTotal = (subTotal == null) ? BigDecimal.ZERO : subTotal;
+        desconto = (desconto == null) ? BigDecimal.ZERO : desconto;
 
         getItens().forEach(ItemPedido::calcularPrecoTotal);
         valorTotalProdutos = getValorTotalProdutos();
