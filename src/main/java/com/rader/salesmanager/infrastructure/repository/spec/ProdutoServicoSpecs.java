@@ -1,6 +1,6 @@
 package com.rader.salesmanager.infrastructure.repository.spec;
 
-import com.rader.salesmanager.domain.filter.ProdutoFilter;
+import com.rader.salesmanager.domain.filter.ProdutoServicoFilter;
 import com.rader.salesmanager.domain.model.ProdutoServico;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 @Component
 public class ProdutoServicoSpecs {
 
-    public static Specification<ProdutoServico> usandoFiltro(ProdutoFilter filtro) {
+    public static Specification<ProdutoServico> usandoFiltro(ProdutoServicoFilter filtro) {
         return (root, query, builder) -> {
 
             var predicates = new ArrayList<Predicate>();
@@ -20,6 +20,11 @@ public class ProdutoServicoSpecs {
             if (filtro.getAtivo() != null) {
                 predicates.add(builder.
                         equal(root.get("ativo"), filtro.getAtivo()));
+            }
+
+            if (filtro.getProduto() != null) {
+                predicates.add(builder.
+                        equal(root.get("produto"), filtro.getProduto()));
             }
 
             if (filtro.getPrecoInicial() != null){
@@ -54,5 +59,4 @@ public class ProdutoServicoSpecs {
         return (root, query, builder) ->
                 builder.equal(root.get("produto"), false);
     }
-
 }

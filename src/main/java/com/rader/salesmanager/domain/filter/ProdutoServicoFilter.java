@@ -8,10 +8,14 @@ import java.math.BigDecimal;
 
 @Setter
 @Getter
-public class ProdutoFilter {
+public class ProdutoServicoFilter {
 
     @ApiModelProperty(example = "True", value = "Booleano se ativo para filtro da pesquisa")
     private Boolean ativo;
+
+    @ApiModelProperty(example = "produto", value = "Recurso a ser consultado: 'true' para produtos, 'false' para serviços " +
+            "ou não informe para vim todos Produtos e Serviços")
+    private Boolean produto;
 
     @ApiModelProperty(example = "Óleo de motor", value = "Nome do produto para filtro da pesquisa")
     private String nome;

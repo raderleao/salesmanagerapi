@@ -31,6 +31,13 @@ public class ProdutoServicoModelAssembler
 
         modelMapper.map(ps, psModel);
 
+        psModel.add(salesLinks.linkToProdutosServicos("produtos-servicos"));
+        if (!ps.getAtivo()) {
+            psModel.add(salesLinks.linkToAtivacaoProdutoServico(ps.getId().toString(), "ativar"));
+        }
+        if(ps.getAtivo()){
+            psModel.add(salesLinks.linkToInativacaoProdutoServico(ps.getId().toString(), "desativar"));
+        }
         return psModel;
     }
 

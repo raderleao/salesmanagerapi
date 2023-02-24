@@ -1,7 +1,6 @@
 package com.rader.salesmanager.api;
 
-import com.rader.salesmanager.api.controller.PedidoController;
-import com.rader.salesmanager.api.controller.ProdutoServicoController;
+import com.rader.salesmanager.api.controller.*;
 import org.springframework.hateoas.*;
 import org.springframework.hateoas.TemplateVariable.VariableType;
 import org.springframework.stereotype.Component;
@@ -47,15 +46,75 @@ public class SalesLinks {
                 .descontar(idPedido, null)).withRel(rel);
     }
 
-    public Link linkToProdutosServicos(String produtoId) {
-        return linkTo(methodOn(ProdutoServicoController.class)
-                .buscar(UUID.fromString(produtoId)))
-                .withRel(IanaLinkRelations.SELF.value());
+    //Item Pedido
+    public Link linkToItemPedido(UUID id, String rel) {
+        return linkTo(methodOn(ItemPedidoController.class)
+                .buscar(id)).withRel(rel);
     }
 
-   /* public Link linkToProdutosServicos(String produtoservicoId) {
-        return linkToProduto(produtoservicoId, IanaLinkRelations.SELF.value());
-    }*/
+    //Produtos e Serviços
+    public Link linkToProdutosServicos(String rel) {
+        TemplateVariables filtroVariables = new TemplateVariables(
+                new TemplateVariable("ativo", VariableType.REQUEST_PARAM),
+                new TemplateVariable("produto", VariableType.REQUEST_PARAM),
+                new TemplateVariable("nome", VariableType.REQUEST_PARAM),
+                new TemplateVariable("precoInicial", VariableType.REQUEST_PARAM),
+                new TemplateVariable("precoFinal", VariableType.REQUEST_PARAM));
+
+
+        String pedidosUrl = linkTo(ProdutoServicoController.class).toUri().toString();
+
+        return Link.of(UriTemplate.of(pedidosUrl,
+                PAGINACAO_VARIABLES.concat(filtroVariables)), rel);
+
+
+    }
+
+    public Link linkToAtivacaoProdutoServico(String produtoServicoId, String rel) {
+        return linkTo(methodOn(ProdutoServicoController.class)
+                .ativar(produtoServicoId)).withRel(rel);
+    }
+
+    public Link linkToInativacaoProdutoServico(String produtoServicoId, String rel) {
+        return linkTo(methodOn(ProdutoServicoController.class)
+                .inativar(produtoServicoId)).withRel(rel);
+    }
+
+    //Produto
+    public Link linkToProduto(UUID produtoId, String rel) {
+        return linkTo(methodOn(ProdutoController.class)
+                .buscar(produtoId)).withRel(rel);
+    }
+
+    public Link linkToProduto(UUID produtoId) {
+        return linkToProduto(produtoId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToProdutos(String rel) {
+        return linkTo(ProdutoController.class).withRel(rel);
+    }
+
+    public Link linkToProdutos() {
+        return linkToProdutos(IanaLinkRelations.SELF.value());
+    }
+
+    //Servico
+    public Link linkToServico(UUID servicoId, String rel) {
+        return linkTo(methodOn(ServicoController.class)
+                .buscar(servicoId)).withRel(rel);
+    }
+
+    public Link linkToServico(UUID servicoId) {
+        return linkToServico(servicoId, IanaLinkRelations.SELF.value());
+    }
+
+    public Link linkToServicos(String rel) {
+        return linkTo(ServicoController.class).withRel(rel);
+    }
+
+    public Link linkToServicos() {
+        return linkToServicos(IanaLinkRelations.SELF.value());
+    }
 
 
 

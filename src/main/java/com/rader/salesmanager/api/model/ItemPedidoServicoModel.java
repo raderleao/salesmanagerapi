@@ -10,12 +10,12 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ItemPedidoModel extends RepresentationModel<ItemPedidoModel> {
+public class ItemPedidoServicoModel extends RepresentationModel<ItemPedidoServicoModel> {
 
     @ApiModelProperty(example = "d427f5cf-b3fb-4ea4-bd8f-2f883ff0c4dd")
     private UUID id;
 
-    private ProdutoServicoResumoModel produtoServico;
+    private ServicoResumoModel servico;
 
     @ApiModelProperty(example = "2")
     private Integer quantidade;

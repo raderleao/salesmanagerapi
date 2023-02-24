@@ -34,7 +34,7 @@ public class CadastroProdutoServicoService {
     }
 
     @Transactional
-    public void inativar(String id){
+    public void desativar(String id){
         var produtoServico = buscarOuFalhar(UUID.fromString(id));
         produtoServico.inativar();
         psRepository.save(produtoServico);

@@ -1,7 +1,5 @@
 package com.rader.salesmanager.api.controller;
 
-import com.rader.salesmanager.api.SalesLinks;
-import com.rader.salesmanager.api.assembler.ProdutoInputDisassembler;
 import com.rader.salesmanager.api.assembler.ProdutoServicoModelAssembler;
 import com.rader.salesmanager.api.model.ProdutoServicoModel;
 import com.rader.salesmanager.api.openapi.controller.ProdutoServicoControllerOpenApi;
@@ -9,7 +7,7 @@ import com.rader.salesmanager.core.data.PageWrapper;
 import com.rader.salesmanager.core.data.PageableTranslator;
 import com.rader.salesmanager.domain.exception.NegocioException;
 import com.rader.salesmanager.domain.exception.ProdutoServicoNaoEncontradoException;
-import com.rader.salesmanager.domain.filter.ProdutoFilter;
+import com.rader.salesmanager.domain.filter.ProdutoServicoFilter;
 import com.rader.salesmanager.domain.model.ProdutoServico;
 import com.rader.salesmanager.domain.service.CadastroProdutoServicoService;
 import com.rader.salesmanager.infrastructure.repository.spec.ProdutoServicoSpecs;
@@ -39,19 +37,14 @@ public class ProdutoServicoController implements ProdutoServicoControllerOpenApi
     private CadastroProdutoServicoService psService;
 
     @Autowired
-    private ProdutoInputDisassembler produtoInputDisassembler;
-
-    @Autowired
     PagedResourcesAssembler<ProdutoServico> pagedResourcesAssembler;
 
-    @Autowired
-    private SalesLinks salesLinks;
-
-
+    @Override
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagedModel<ProdutoServicoModel> pesquisar(ProdutoFilter filtro,
+    public PagedModel<ProdutoServicoModel> pesquisar(ProdutoServicoFilter filtro,
                                                      @PageableDefault(size = 10) Pageable pageable){
         Pageable pageableTraduzido = traduzirPageable(pageable);
+
         Page<ProdutoServico> psPage = psService.buscarTodos(
                 ProdutoServicoSpecs.usandoFiltro(filtro), pageableTraduzido);
 
@@ -60,11 +53,13 @@ public class ProdutoServicoController implements ProdutoServicoControllerOpenApi
         return pagedResourcesAssembler.toModel(psPage, psModelAssembler);
     }
 
+    @Override
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ProdutoServicoModel buscar(@PathVariable UUID id) {
         return psModelAssembler.toModel(psService.buscarOuFalhar(id));
     }
 
+    @Override
     @PutMapping(path ="/{id}/ativo", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> ativar(@PathVariable String id) {
@@ -72,13 +67,15 @@ public class ProdutoServicoController implements ProdutoServicoControllerOpenApi
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path ="/{id}/inativar", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Override
+    @DeleteMapping(path ="/{id}/ativo", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> inativar(@PathVariable String id) {
-        psService.inativar(id);
+        psService.desativar(id);
         return ResponseEntity.noContent().build();
     }
 
+    @Override
     @PutMapping("/ativacoes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public ResponseEntity<Void> ativarMultiplos(@RequestBody List<String> psId ){

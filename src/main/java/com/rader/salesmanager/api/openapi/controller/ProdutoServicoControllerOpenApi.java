@@ -2,7 +2,7 @@ package com.rader.salesmanager.api.openapi.controller;
 
 import com.rader.salesmanager.api.exceptionhandler.Problem;
 import com.rader.salesmanager.api.model.ProdutoServicoModel;
-import com.rader.salesmanager.domain.filter.ProdutoFilter;
+import com.rader.salesmanager.domain.filter.ProdutoServicoFilter;
 import io.swagger.annotations.*;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,7 +24,7 @@ public interface ProdutoServicoControllerOpenApi {
                     name = "campos", paramType = "query", type = "string")
     })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    PagedModel<ProdutoServicoModel> pesquisar(ProdutoFilter filtro,
+    PagedModel<ProdutoServicoModel> pesquisar(ProdutoServicoFilter filtro,
                                               @PageableDefault(size = 10) Pageable pageable);
 
 

@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ItemPedidoModel extends RepresentationModel<ItemPedidoModel> {
+public class ItemPedidoResumoModel extends RepresentationModel<ItemPedidoResumoModel> {
 
     @ApiModelProperty(example = "d427f5cf-b3fb-4ea4-bd8f-2f883ff0c4dd")
     private UUID id;

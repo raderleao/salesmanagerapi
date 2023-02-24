@@ -3,29 +3,15 @@ package com.rader.salesmanager.api.openapi.controller;
 import com.rader.salesmanager.api.exceptionhandler.Problem;
 import com.rader.salesmanager.api.model.ProdutoModel;
 import com.rader.salesmanager.api.model.input.ProdutoInput;
-import com.rader.salesmanager.domain.filter.ProdutoFilter;
 import io.swagger.annotations.*;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.UUID;
 
 @Api(tags = "Produtos")
 public interface ProdutoControllerOpenApi {
-
-    @ApiOperation("Pesquisa os produtos")
-    @ApiImplicitParams({
-            @ApiImplicitParam(value = "Nomes das propriedades para filtrar na resposta, separados por vírgula",
-                    name = "campos", paramType = "query", type = "string")
-    })
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    PagedModel<ProdutoModel> pesquisar(ProdutoFilter filtro,
-                                       @PageableDefault(size = 10) Pageable pageable);
-
 
     @ApiOperation("Busca um produto")
     @ApiResponses({
@@ -40,6 +26,7 @@ public interface ProdutoControllerOpenApi {
     @ApiResponses({
             @ApiResponse(code = 201, message = "Produto cadastrado"),
     })
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     ProdutoModel adicionar(
 
             @ApiParam(name = "corpo", value = "Representação de um novo produto", required = true)

@@ -10,6 +10,4 @@ import java.util.UUID;
 @Repository
 public interface ItemPedidoRepository extends JpaRepository<ItemPedido, UUID>,
         JpaSpecificationExecutor<ItemPedido> {
-
-
 }

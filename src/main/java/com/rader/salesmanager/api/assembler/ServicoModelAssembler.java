@@ -6,6 +6,7 @@ import com.rader.salesmanager.api.model.ServicoModel;
 import com.rader.salesmanager.domain.model.ProdutoServico;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -30,22 +31,24 @@ public class ServicoModelAssembler
                 = createModelWithId(servico.getId(), servico);
 
         modelMapper.map(servico, servicoModel);
+        servicoModel.add(salesLinks.linkToServicos("servicos"));
 
-        servicoModel.add(salesLinks
-                .linkToProdutosServicos(servico.getId().toString()));
+        if (!servico.getAtivo()) {
+            servicoModel.add(salesLinks.linkToAtivacaoProdutoServico(servicoModel.getId().toString(), "ativar"));
+        }
+        if(servico.getAtivo()){
+            servicoModel.add(salesLinks.linkToInativacaoProdutoServico(servicoModel.getId().toString(), "desativar"));
+        }
+
+
         return servicoModel;
     }
+    @Override
+    public CollectionModel<ServicoModel> toCollectionModel(Iterable<? extends ProdutoServico> entities) {
+        CollectionModel<ServicoModel> collectionModel = super.toCollectionModel(entities);
 
+        collectionModel.add(salesLinks.linkToServicos());
 
-
-
-
-
-
-
-
-
-
-
-
+        return collectionModel;
+    }
 }

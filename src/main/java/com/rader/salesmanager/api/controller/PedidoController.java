@@ -122,8 +122,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 
         return ResponseEntity.noContent().build();
     }
-
-
+    
     private Pageable traduzirPageable(Pageable apiPageable) {
         var mapeamento = Map.of(
                 "id", "id",
