@@ -8,7 +8,6 @@ import com.rader.salesmanager.domain.exception.EntidadeNaoEncontradaException;
 import com.rader.salesmanager.domain.exception.NegocioException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -92,43 +90,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
 
         return handleExceptionInternal(ex, problem, headers, status, request);
-    }
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ResponseEntity<Object> handleMaxUploadFileSizeExceeded(
-            MaxUploadSizeExceededException ex, WebRequest request) {
-
-        HttpStatus status = HttpStatus.PAYLOAD_TOO_LARGE;
-        ProblemType problemType = ProblemType.MAX_FILE_SIZE_EXCEEDED;
-        String detail = ex.getMessage();
-        String userMessage = "The file you are trying to upload exceeds the max allowed file size";
-
-        if (ex.getRootCause() instanceof FileSizeLimitExceededException) {
-            var specEx = (FileSizeLimitExceededException) ex.getRootCause();
-            detail = specEx.getMessage();
-            userMessage = String.format("The file you are trying to upload exceeds the max allowed file size of %d bytes",
-                    specEx.getPermittedSize());
-        }
-
-        Problem problem = createProblemBuilder(status, problemType, detail)
-                .userMessage(userMessage)
-                .build();
-
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
-        String detail = MSG_ERRO_GENERICA_USUARIO_FINAL;
-
-        log.error(ex.getMessage(), ex);
-
-        Problem problem = createProblemBuilder(status, problemType, detail)
-                .userMessage(detail)
-                .build();
-
-        return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
 
     @Override
